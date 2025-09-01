@@ -1,0 +1,150 @@
+#!/usr/bin/env python3
+import sys
+
+class Colors:
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    ENDC = '\033[0m'
+
+try:
+    from PIL import Image, ImageDraw, ImageFilter
+except ImportError:
+    print(f"{Colors.RED}[ERROR] Pillow is not installed. Please install it with: pip install Pillow{Colors.ENDC}")
+    sys.exit(1)
+
+import argparse
+import random
+import math
+import os
+
+def process_image(input_path):
+    """
+    Converts an image to JPG and resizes it if it's too large.
+    Returns the processed Image object or None on failure.
+    """
+    print(f"Processing '{input_path}'...")
+    try:
+        img = Image.open(input_path)
+        max_size = 1024
+        width, height = img.size
+
+        if width > max_size or height > max_size:
+            ratio = min(max_size / width, max_size / height)
+            new_size = (int(width * ratio), int(height * ratio))
+            img = img.resize(new_size, Image.Resampling.LANCZOS)
+            print(f"{Colors.GREEN}[SUCCESS] Image '{input_path}' resized.{Colors.ENDC}")
+
+        return img
+    except FileNotFoundError:
+        print(f"{Colors.RED}[ERROR] Image file '{input_path}' not found.{Colors.ENDC}")
+    except Image.UnidentifiedImageError:
+        print(f"{Colors.RED}[ERROR] Could not identify image '{input_path}'. It may be corrupt or an invalid format.{Colors.ENDC}")
+    except Exception as e:
+        print(f"{Colors.RED}[ERROR] An unexpected error occurred while processing '{input_path}': {e}{Colors.ENDC}")
+
+    return None
+
+def create_circular_transition_gif(before_image, after_image, output_path):
+    """
+    Creates a GIF where an 'after' image expands in a circular pattern
+    from a random point to reveal over a 'before' image.
+    The expansion starts very fast and then slows down dramatically.
+    """
+    num_transition_steps = 60
+    frame_duration = 50
+    total_pause_duration = 1500
+    num_pause_frames = int(total_pause_duration / frame_duration)
+    power = 5
+
+    print("Gif is being created. Please wait...")
+
+    try:
+        width, height = before_image.size
+        center = (random.randint(0, width), random.randint(0, height))
+        max_radius = max(
+            math.hypot(center[0], center[1]),
+            math.hypot(width - center[0], center[1]),
+            math.hypot(center[0], height - center[1]),
+            math.hypot(width - center[0], height - center[1])
+        )
+
+        frames = []
+        for _ in range(num_pause_frames):
+            frames.append(before_image.copy())
+        print(f"{Colors.GREEN}[SUCCESS] Before frames have been added!{Colors.ENDC}")
+
+        for i in range(num_transition_steps + 1):
+            t = i / num_transition_steps
+            radius = max_radius * (1 - (1 - t) ** power)
+
+            mask = Image.new('L', (width, height), 0)
+            draw = ImageDraw.Draw(mask)
+            draw.ellipse((center[0] - radius, center[1] - radius,
+                          center[0] + radius, center[1] + radius), fill=255)
+
+            blurred_mask = mask.filter(ImageFilter.GaussianBlur(radius=5))
+
+            new_frame = before_image.copy()
+            new_frame.paste(after_image, (0, 0), blurred_mask)
+            frames.append(new_frame)
+        print(f"{Colors.GREEN}[SUCCESS] Transition frames have been added!{Colors.ENDC}")
+
+        for _ in range(num_pause_frames):
+            frames.append(after_image.copy())
+        print(f"{Colors.GREEN}[SUCCESS] After frames have been added!{Colors.ENDC}")
+
+        print("Frames are being saved...")
+        frames[0].save(
+            output_path,
+            save_all=True,
+            append_images=frames[1:],
+            duration=frame_duration,
+            loop=0,
+            optimize=True,
+            quality=80
+        )
+        print(f"{Colors.GREEN}[SUCCESS] GIF '{output_path}' created successfully!{Colors.ENDC}")
+        return True
+
+    except Exception as e:
+        print(f"{Colors.RED}[ERROR] An unexpected error occurred while creating the GIF: {e}{Colors.ENDC}")
+        return False
+
+if __name__ == "__main__":
+    try:
+        parser = argparse.ArgumentParser(description="Create a circular transition GIF from two images.")
+
+        parser.add_argument("--before", required=True, help="Path to the 'before' image.")
+        parser.add_argument("--after", required=True, help="Path to the 'after' image.")
+        parser.add_argument("--output", required=True, help="Path to save the output GIF.")
+
+        args = parser.parse_args()
+
+        before_image = process_image(args.before)
+        after_image = process_image(args.after)
+
+        if not before_image or not after_image:
+            sys.exit(1)
+
+        if before_image.size != after_image.size:
+            print(f"{Colors.YELLOW}[WARNING] Images have different dimensions. Resizing to match...{Colors.ENDC}")
+            before_width, before_height = before_image.size
+            after_width, after_height = after_image.size
+
+            min_width = min(before_width, after_width)
+            min_height = min(before_height, after_height)
+
+            before_image = before_image.resize((min_width, min_height))
+            after_image = after_image.resize((min_width, min_height))
+            print(f"{Colors.GREEN}[SUCCESS] Images resized to {min_width}x{min_height}.{Colors.ENDC}")
+
+        if not create_circular_transition_gif(before_image, after_image, args.output):
+            sys.exit(1)
+
+    except argparse.ArgumentError as e:
+        print(f"{Colors.RED}[ERROR] Argument error: {e}{Colors.ENDC}")
+        sys.exit(1)
+    except Exception as e:
+        print(f"{Colors.RED}[ERROR] A fatal, unexpected error occurred: {e}{Colors.ENDC}")
+        sys.exit(1)
