@@ -1,47 +1,56 @@
 # mktransgif
 
-mktransgif is a Python command-line tool that creates a circular transition GIF between two images. The effect starts from a random point and expands outward, smoothly revealing the "after" image over the "before" image.
+**mktransgif** is a Python command-line tool that creates a circular transition GIF between two images.  
+The effect starts from a random point and expands outward, smoothly revealing the "after" image over the "before" image.
 
 ## Features
 
-- Generates a circular transition effect between two images
+- Creates a smooth circular transition effect between two images  
+- Accepts common image formats as input  
+- Automatically resizes mismatched images to match dimensions  
+- Configurable transition speed, duration, curve, quality, and looping  
 
-- Automatically resizes mismatched images to the same dimensions
-
-- Able to take images of various formats as input
-
+<br><br>
 
 ![Gif of two cats growing up](cats_growing_up.gif "Cats Growing Up")
 
-
 ## Installation
 
-```
+```bash
 pip install Pillow
 chmod +x mktransgif
-```
+````
 
 ## Usage
 
-```
-./mktransgif --before BEFORE_IMAGE --after AFTER_IMAGE --output OUTPUT_GIF
+```bash
+./mktransgif --before BEFORE_IMAGE --after AFTER_IMAGE --output OUTPUT_GIF [options]
 ```
 
 ### Arguments
 
-- `--before` : Path to the "before" image
-
-- `--after`  : Path to the "after" image
-
-- `--output` : Path to save the generated GIF
+* `--before` : Path to the "before" image (required)
+* `--after`  : Path to the "after" image (required)
+* `--output` : Path to save the generated GIF (required)
+* `--steps` : Number of frames in the transition (default: 60)
+* `--frame-duration` : Duration of each frame in ms (default: 50)
+* `--pause-duration` : Time period to show the before and after images in ms (default: 1500)
+* `--power` : Acceleration of transition curve (default: 5)
+* `--max-size` : Maximum GIF resolution (default: 1024)
+* `--loop` : Number of times to loop the GIF, 0 = infinite (default: 0)
+* `--quality` : GIF quality (default: 80)
 
 ### Example
 
-```
-./mktransgif --before ./sample/cats_year_zero.jpg --after ./sample/cats_year_one.png --output cats_growing_up.gif
+```bash
+./mktransgif \
+  --before ./sample/cats_year_zero.jpg \
+  --after ./sample/cats_year_one.png \
+  --output cats_growing_up.gif \
+  --steps 80 --frame-duration 40 --pause-duration 2000 --power 4 --max-size 800 --loop 0 --quality 90
 ```
 
 ## License
 
-This project is open-source and available under the [MIT License](LICENCE).
+This project is open-source and available under the [MIT License](LICENSE).
 
