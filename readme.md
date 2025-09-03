@@ -1,6 +1,6 @@
-# mktransgif
+# mktransition
 
-**mktransgif** is a Python command-line tool that creates a circular transition GIF between two images.  
+**mktransition** is a Python command-line tool that creates a circular transition webp between two images.  
 The effect starts from a random point and expands outward, smoothly revealing the "after" image over the "before" image.
 
 ## Features
@@ -10,21 +10,21 @@ The effect starts from a random point and expands outward, smoothly revealing th
 - Automatically resizes mismatched images to match dimensions  
 - Configurable transition speed, duration, curve, quality, and looping  
 
-<br><br>
+<br>
 
-![Gif of two cats growing up](cats_growing_up.gif "Cats Growing Up")
+![Gif of two cats growing up](cats_growing_up.webp "Cats Growing Up")
 
 ## Installation
 
 ```bash
 pip install Pillow
-chmod +x mktransgif
+chmod +x mktransition
 ````
 
 ## Usage
 
 ```bash
-./mktransgif --before BEFORE_IMAGE --after AFTER_IMAGE --output OUTPUT_GIF [options]
+./mktransition --before BEFORE_IMAGE --after AFTER_IMAGE --output OUTPUT_GIF [options]
 ```
 
 ### Arguments
@@ -43,7 +43,7 @@ chmod +x mktransgif
 ### Example
 
 ```bash
-./mktransgif \
+./mktransition \
   --before ./sample/cats_year_zero.jpg \
   --after ./sample/cats_year_one.png \
   --output cats_growing_up.gif \
