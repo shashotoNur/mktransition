@@ -152,11 +152,11 @@ def build_frames(before: Image.Image, after: Image.Image, cfg: Config) -> List[I
 
 
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="Create a circular transition GIF from two images.")
+    p = argparse.ArgumentParser(description="Create a circular transition animated WebP from two images.")
 
     p.add_argument("--before", required=True, help="Path to the 'before' image.")
     p.add_argument("--after", required=True, help="Path to the 'after' image.")
-    p.add_argument("--output", required=True, help="Path to save the output GIF.")
+    p.add_argument("--output", required=True, help="Path to save the output animated WebP.")
 
     p.add_argument("--steps", type=int, default=60, help="Transition frames count (default: 60).")
     p.add_argument("--frame-duration", type=int, default=50, help="Duration per frame in ms (default: 50).")
@@ -165,7 +165,7 @@ def parse_args() -> argparse.Namespace:
 
     p.add_argument("--max-size", type=int, default=1024, help="Maximum image dimension to resize to (default: 1024).")
     p.add_argument("--loop", type=int, default=0, help="Loop count (0 means infinite) (default: 0).")
-    p.add_argument("--quality", type=int, default=80, help="GIF quality hint (default: 80).")
+    p.add_argument("--quality", type=int, default=80, help="animated WebP quality hint (default: 80).")
     p.add_argument("--seed", type=int, default=None, help="Random seed for deterministic center (optional).")
 
     return p.parse_args()

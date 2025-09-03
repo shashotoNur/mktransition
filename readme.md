@@ -1,6 +1,6 @@
 # mktransition
 
-**mktransition** is a Python command-line tool that creates a circular transition webp between two images.  
+**mktransition** is a Python command-line tool that creates a circular transition animated WebP between two images.  
 The effect starts from a random point and expands outward, smoothly revealing the "after" image over the "before" image.
 
 ## Features
@@ -12,7 +12,7 @@ The effect starts from a random point and expands outward, smoothly revealing th
 
 <br>
 
-![Gif of two cats growing up](cats_growing_up.webp "Cats Growing Up")
+![Animated WebP of two cats growing up](cats_growing_up.webp "Cats Growing Up")
 
 ## Installation
 
@@ -24,21 +24,21 @@ chmod +x mktransition
 ## Usage
 
 ```bash
-./mktransition --before BEFORE_IMAGE --after AFTER_IMAGE --output OUTPUT_GIF [options]
+./mktransition --before BEFORE_IMAGE --after AFTER_IMAGE --output OUTPUT_animated WebP [options]
 ```
 
 ### Arguments
 
 * `--before` : Path to the "before" image (required)
 * `--after`  : Path to the "after" image (required)
-* `--output` : Path to save the generated GIF (required)
+* `--output` : Path to save the generated animated WebP (required)
 * `--steps` : Number of frames in the transition (default: 60)
 * `--frame-duration` : Duration of each frame in ms (default: 50)
 * `--pause-duration` : Time period to show the before and after images in ms (default: 1500)
 * `--power` : Acceleration of transition curve (default: 5)
-* `--max-size` : Maximum GIF resolution (default: 1024)
-* `--loop` : Number of times to loop the GIF, 0 = infinite (default: 0)
-* `--quality` : GIF quality (default: 80)
+* `--max-size` : Maximum animated WebP resolution (default: 1024)
+* `--loop` : Number of times to loop the animated WebP, 0 = infinite (default: 0)
+* `--quality` : animated WebP quality (default: 80)
 
 ### Example
 
@@ -46,7 +46,7 @@ chmod +x mktransition
 ./mktransition \
   --before ./sample/cats_year_zero.jpg \
   --after ./sample/cats_year_one.png \
-  --output cats_growing_up.gif \
+  --output cats_growing_up.webp \
   --steps 80 --frame-duration 40 --pause-duration 2000 --power 4 --max-size 800 --loop 0 --quality 90
 ```
 
